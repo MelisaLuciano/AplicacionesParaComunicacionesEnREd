@@ -1,0 +1,85 @@
+import numpy as np
+import random as rand
+import os
+
+# https://github.com/Zait06/ACR-ESCOM.git
+
+class Buscaminas():
+
+	def __init__(self, tam):	# Se crea la matriz
+		self.tam = tam	# Tamaño del buscaminas
+		self.matriz = np.zeros((self.tam, self.tam), dtype=np.int)
+		self.p=""
+		self.xy=[]
+		self.vista=["-"]*(tam+1)
+		self.crearMina()
+		self.llenoVista()
+
+	def bienvenida(self):
+		return "Juega Buscaminas\n"
+
+	def llenoVista(self):
+		for i in range((self.tam)+1):
+			self.vista[i]=["-"]*(self.tam+1)
+		self.vista[1][0]=0
+		for i in range(self.tam):
+			for j in range(self.tam):
+				if i==0:
+					self.vista[i][j+1]=j
+				elif j==0:
+					self.vista[i+1][j]=i 
+
+	def verBuscaminas(self):
+		tabla=""
+		for i in range(self.tam+1):
+			for j in range(self.tam+1):
+				tabla=tabla+str(self.vista[i][j])+" "
+			tabla=tabla+"\n"
+		return tabla
+
+	def crearMina(self):
+		a = 0; b = 0
+		minas = 0; i = 0
+		if self.tam == 9:
+			minas = 10
+		else:
+			minas = 40
+		while i < minas:
+			a=rand.randint(0,self.tam-1) # Numeros al azar donde poner el número
+			b=rand.randint(0,self.tam-1)
+			if self.matriz[a][b] == 0:
+				self.matriz[a][b] = (-1)
+				i=i+1
+
+	def coordenadaUs(self,xy):
+		self.xy=self.p.split(",")
+		if self.matriz[int(self.xy[0])][int(self.xy[1])]==0:  #casilla vacia recibe numero
+			self.matriz[int(self.xy[0])][int(self.xy[1])]=1
+			self.vista[int(self.xy[0])+1][int(self.xy[1])+1]="0"
+
+		elif self.matriz[int(self.xy[0])][int(self.xy[1])]==-1:
+			return xy
+		else:
+			return 
+	def tiempoPar(self,tiempo):
+		men=""
+		if tiempo<60:
+			men="\t Tiempo de juego: {0:.2f} segs.".format(float(tiempo))
+		else:
+			men="\t Tiempo de juego: {} min.".format(int(tiempo/60))
+			men= men+"{} seg.".format(int(tiempo%60))
+		return men
+
+	def ocup(self,coord,tip):
+		var=True
+		self.xy=coord.split(",") 
+		if self.matriz[int(self.xy[0])][int(self.xy[1])]==0: #si es que casilla está vacia ingresar numero
+			self.matriz[int(self.xy[0])][int(self.xy[1])]=tip
+			self.vista[int(self.xy[0])+1][int(self.xy[1])+1]="o"
+			var=0
+		elif self.matriz[int(self.xy[0])][int(self.xy[1])]==-1:
+			var = 2
+		else:
+			var=1
+		return var
+	

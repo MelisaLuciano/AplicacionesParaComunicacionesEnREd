@@ -1,0 +1,49 @@
+import socket
+import sys
+import os
+
+HOST = input("Ingrese IP del servidor: ")  # The server's hostname or IP address
+PORT = int(input("Ingrese el puerto del servidor: "))  # The port used by the server
+msgFromClient = "Conexion hecha"
+bytesToSend = str.encode(msgFromClient)
+serverAddressPort = (HOST, PORT)
+bufferSize = 1024
+
+with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as UDPClientSocket:
+	UDPClientSocket.sendto(bytesToSend, serverAddressPort)  # envia al seridor
+	msgFromServer = UDPClientSocket.recvfrom(bufferSize) #Mensaje que viene del srvidpr	
+	os.system("clear") #para limpiar consola
+	print("{}".format(msgFromServer[0].decode()))
+	msgFromClient = input("Dificultad: ")
+	bytesToSend = str.encode(msgFromClient)
+	UDPClientSocket.sendto(bytesToSend, serverAddressPort) 
+	os.system("clear")
+
+	while True:
+		msgFromServer = UDPClientSocket.recvfrom(bufferSize) #Mensaje que viene del srvidpr	
+		print("{}".format(msgFromServer[0].decode()))
+		msgRecibido=msgFromServer[0].decode()
+
+		if str(msgFromServer)=="Sigue":
+			msgFromServer=input("\n Ingrese las coordenadas para tirar (x,y): ")
+			bytesToSend = str.encode(msgFromClient)
+			UDPClientSocket.sendto(bytesToSend,serverAddressPort)
+			os.system("clear")
+		elif str(msgRecibido)=="Elije otro":
+			os.system("clear")
+			print(str(msgRecibido+"\n"))
+		elif str(msgRecibido)=="exit":
+			break
+		else:
+			print(str(msgRecibido))
+
+	msgFromServer = UDPClientSocket.recvfrom(bufferSize)
+	msgRecibido=msgFromServer[0].decode()
+	print(str(msgRecibido))
+print("\n\t¡¡¡Fin del juego!!!\n")
+
+
+
+
+
+
